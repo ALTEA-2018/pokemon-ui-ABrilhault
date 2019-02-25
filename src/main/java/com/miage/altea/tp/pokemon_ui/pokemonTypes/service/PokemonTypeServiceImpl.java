@@ -17,8 +17,9 @@ public class PokemonTypeServiceImpl implements PokemonTypeService {
 	private String pokemonTypeServiceUrl;
 
 	public List<PokemonType> listPokemonsTypes() {
-//		var expectedUrl = "http://localhost:8080/pokemon-types";
-		var arrayOfPokemons =  restTemplate.getForObject(pokemonTypeServiceUrl + "/pokemon-types", PokemonType[].class);
+//		var expectedUrl = "https://pokemontypes-api.herokuapp.com/pokemon-types/";
+		var arrayOfPokemons =  restTemplate.getForObject(pokemonTypeServiceUrl + "/pokemon-types/", PokemonType[].class);
+//		var arrayOfPokemons =  restTemplate.getForObject(expectedUrl, PokemonType[].class);
 		return Lists.newArrayList(arrayOfPokemons);
 	}
 
