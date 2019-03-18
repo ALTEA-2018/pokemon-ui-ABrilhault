@@ -3,6 +3,7 @@ package com.miage.altea.tp.pokemon_ui.pokemonTypes.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,6 +11,8 @@ import com.miage.altea.tp.pokemon_ui.pokemonTypes.bo.PokemonType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,15 +32,16 @@ class PokemonTypeServiceImplTest {
 		pikachu.setName("pikachu");
 		pikachu.setId(25);
 
-		var expectedUrl = "http://localhost:8080/pokemon-types";
-		when(restTemplate.getForObject(expectedUrl, PokemonType[].class)).thenReturn(new PokemonType[] { pikachu });
+
+		var expectedUrl = "http://localhost:8080/pokemon-types/";
+		when(restTemplate.getForObject(eq(expectedUrl), eq(PokemonType[].class), any(HttpEntity.class))).thenReturn(new PokemonType[] { pikachu });
 
 		var pokemons = pokemonServiceImpl.listPokemonsTypes();
 
 		assertNotNull(pokemons);
 		assertEquals(1, pokemons.size());
 
-		verify(restTemplate).getForObject(expectedUrl, PokemonType[].class);
+		verify(restTemplate).getForObject(eq(expectedUrl), eq(PokemonType[].class), any(HttpEntity.class));
 	}
 
 	@Test
