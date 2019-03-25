@@ -1,8 +1,9 @@
 package com.miage.altea.tp.pokemon_ui.pokemonTypes.bo;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PokemonType {
+public class PokemonType implements Serializable {
 
 	private int id;
 	private int baseExperience;
@@ -12,6 +13,21 @@ public class PokemonType {
 	private Stats stats;
 	private int weight;
 	private List<String> types;
+
+	public PokemonType(int id, int baseExperience, int height, String name, Sprites sprites, Stats stats, int weight,
+			List<String> types) {
+		this.id = id;
+		this.baseExperience = baseExperience;
+		this.height = height;
+		this.name = name;
+		this.sprites = sprites;
+		this.stats = stats;
+		this.weight = weight;
+		this.types = types;
+	}
+
+	public PokemonType() {
+	}
 
 	public int getId() {
 		return id;

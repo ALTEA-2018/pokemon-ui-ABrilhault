@@ -1,6 +1,8 @@
 package com.miage.altea.tp.pokemon_ui.pokemonTypes.bo;
 
-public class Stats {
+import java.io.Serializable;
+
+public class Stats implements Serializable {
 
 	private Integer speed;
 	private Integer defense;

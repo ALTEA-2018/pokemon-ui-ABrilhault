@@ -1,6 +1,8 @@
 package com.miage.altea.tp.pokemon_ui.pokemonTypes.bo;
 
-public class Sprites {
+import java.io.Serializable;
+
+public class Sprites implements Serializable {
 
 	private String back_default;
 	private String front_default;
