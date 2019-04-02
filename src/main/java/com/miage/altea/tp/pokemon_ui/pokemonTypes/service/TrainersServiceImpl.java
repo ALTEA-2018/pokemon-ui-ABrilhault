@@ -5,6 +5,7 @@ import java.util.List;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,6 +20,7 @@ public class TrainersServiceImpl implements TrainersService {
 	@Autowired
 	private PokemonTypeServiceImpl service;
 
+	@Cacheable("trainers")
 	public List<Trainer> listTrainers() {
 		var arrayOfTrainers =  restTemplate.getForObject(trainerServiceUrl + "/trainers/", Trainer[].class);
 		var listOfTrainers =  Lists.newArrayList(arrayOfTrainers);
