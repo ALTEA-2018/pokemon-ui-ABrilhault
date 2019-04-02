@@ -23,7 +23,7 @@ public class TrainersServiceImpl implements TrainersService {
 		var arrayOfTrainers =  restTemplate.getForObject(trainerServiceUrl + "/trainers/", Trainer[].class);
 		var listOfTrainers =  Lists.newArrayList(arrayOfTrainers);
 
-		listOfTrainers.stream().forEach(
+		listOfTrainers.parallelStream().forEach(
 				t -> t.getTeam().forEach(
 						p -> p.setType(service.getPokemonType(p.getPokemonType()))));
 		return listOfTrainers;
