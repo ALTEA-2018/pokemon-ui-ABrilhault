@@ -1,15 +1,17 @@
-package com.miage.altea.tp.pokemon_ui.pokemonTypes.service;
+package com.miage.altea.tp.pokemon_ui.trainers.service;
 
 import java.util.List;
 
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.miage.altea.tp.pokemon_ui.pokemonTypes.bo.Trainer;
+import com.miage.altea.tp.pokemon_ui.pokemonTypes.service.PokemonTypeServiceImpl;
+import com.miage.altea.tp.pokemon_ui.trainers.bo.Trainer;
 
 @Service
 public class TrainersServiceImpl implements TrainersService {
@@ -31,7 +33,13 @@ public class TrainersServiceImpl implements TrainersService {
 		return listOfTrainers;
 	}
 
+	@Override
+	public Trainer getTrainer(String name) {
+		return restTemplate.getForObject(trainerServiceUrl + "/trainers/{name}", Trainer.class, name);
+	}
+
 	@Autowired
+	@Qualifier("trainerApiRestTemplate")
 	void setRestTemplate(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}

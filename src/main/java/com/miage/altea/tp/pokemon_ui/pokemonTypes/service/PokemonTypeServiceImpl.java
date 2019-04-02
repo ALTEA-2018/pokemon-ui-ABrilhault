@@ -38,8 +38,8 @@ public class PokemonTypeServiceImpl implements PokemonTypeService {
 
 	@Cacheable({"pokemons"})
 	public PokemonType getPokemonType(int id){
-		return this.circuitBreaker
-				.executeSupplier(() -> restTemplate.getForObject(pokemonTypeServiceUrl + "/pokemon-types/{id}", PokemonType.class, id));
+			return this.circuitBreaker
+					.executeSupplier(() -> restTemplate.getForObject(pokemonTypeServiceUrl + "/pokemon-types/{id}", PokemonType.class, id));
 
 //		return restTemplate.getForObject(pokemonTypeServiceUrl + "/pokemon-types/{id}", PokemonType.class, id);
 	}

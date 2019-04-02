@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.miage.altea.tp.pokemon_ui.pokemonTypes.service.TrainersService;
+import com.miage.altea.tp.pokemon_ui.trainers.service.TrainersService;
 
 @Controller
 public class TrainersController {
