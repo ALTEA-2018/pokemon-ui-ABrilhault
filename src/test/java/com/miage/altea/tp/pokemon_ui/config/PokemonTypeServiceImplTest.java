@@ -1,5 +1,9 @@
 package com.miage.altea.tp.pokemon_ui.config;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerOpenException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,8 +19,10 @@ import com.miage.altea.tp.pokemon_ui.pokemonTypes.service.PokemonTypeService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -62,5 +68,24 @@ public class PokemonTypeServiceImplTest {
 		assertNotNull(cachedValue);
 		assertEquals(PokemonType.class, cachedValue.getClass());
 		assertEquals("Pikachu", ((PokemonType)cachedValue).getName());
+	}
+
+	@Test
+	void getPokemonType_shouldCircuitBreak(){
+		var circuitBreaker = CircuitBreaker.of("pokemon-types", CircuitBreakerConfig.custom().ringBufferSizeInClosedState(2).build());
+
+		pokemonTypeService.setCircuitBreaker(circuitBreaker);
+		// the circuit should first be closed
+		assertEquals(CircuitBreaker.State.CLOSED, circuitBreaker.getState());
+		// registering 2 failures for the circuit to open
+		for (int i = 0; i < 2; i++) {
+			circuitBreaker.onError(0, new Exception());
+		}
+
+		assertEquals(CircuitBreaker.State.OPEN, circuitBreaker.getState());
+		// the call should not happen
+		assertThrows(CircuitBreakerOpenException.class, () -> pokemonTypeService.getPokemonType(25));
+		// restTemplate should not have been called
+		verifyZeroInteractions(restTemplate);
 	}
 }

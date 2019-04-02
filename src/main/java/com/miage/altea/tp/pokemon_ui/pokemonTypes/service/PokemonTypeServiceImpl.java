@@ -1,5 +1,7 @@
 package com.miage.altea.tp.pokemon_ui.pokemonTypes.service;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -19,6 +21,7 @@ import com.miage.altea.tp.pokemon_ui.pokemonTypes.bo.PokemonType;
 public class PokemonTypeServiceImpl implements PokemonTypeService {
 
   private RestTemplate restTemplate;
+  private CircuitBreaker circuitBreaker;
 	private String pokemonTypeServiceUrl;
 
 	@Cacheable({"pokemons"})
@@ -35,12 +38,20 @@ public class PokemonTypeServiceImpl implements PokemonTypeService {
 
 	@Cacheable({"pokemons"})
 	public PokemonType getPokemonType(int id){
-		return restTemplate.getForObject(pokemonTypeServiceUrl + "/pokemon-types/{id}", PokemonType.class, id);
+		return this.circuitBreaker
+				.executeSupplier(() -> restTemplate.getForObject(pokemonTypeServiceUrl + "/pokemon-types/{id}", PokemonType.class, id));
+
+//		return restTemplate.getForObject(pokemonTypeServiceUrl + "/pokemon-types/{id}", PokemonType.class, id);
 	}
 
 	@Autowired
 	public void setRestTemplate(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
+	}
+
+	@Autowired
+	public void setCircuitBreaker(CircuitBreaker circuitBreaker) {
+		this.circuitBreaker = circuitBreaker;
 	}
 
 	@Value("${pokemonType.service.url}")
