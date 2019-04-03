@@ -1,6 +1,7 @@
 package com.miage.altea.tp.pokemon_ui.trainers.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,27 @@ public class TrainersServiceImpl implements TrainersService {
 
 	@Override
 	public Trainer getTrainer(String name) {
-		return restTemplate.getForObject(trainerServiceUrl + "/trainers/{name}", Trainer.class, name);
+		var trainer = restTemplate.getForObject(trainerServiceUrl + "/trainers/{name}", Trainer.class, name);
+		trainer.getTeam().stream().forEach(p -> p.setType(service.getPokemonType(p.getPokemonType())));
+		return trainer;
+	}
+
+	@Override
+	public List<Trainer> getAllTrainers(String name) {
+		var arrayOfTrainers =  restTemplate.getForObject(trainerServiceUrl + "/trainers/", Trainer[].class);
+		var listOfTrainers =  Lists.newArrayList(arrayOfTrainers);
+
+		var otherTrainers = listOfTrainers.stream()
+				.filter(t -> !t.getName().equals(name))
+				.collect(Collectors.toList());
+
+		otherTrainers.parallelStream().forEach(
+					t -> t.getTeam().forEach(
+						p -> p.setType(service.getPokemonType(p.getPokemonType()))
+					)
+				);
+
+		return otherTrainers;
 	}
 
 	@Autowired
